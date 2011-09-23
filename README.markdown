@@ -26,10 +26,10 @@ $('#myform').persistentForm();
 
 ## Configuration
 
-Set any or all of the following options:
+Run with any or all of the following options:
 
 ```javascript
-var options = {
+$('#myform').persistentForm({
   // URL for ajax posts. Defaults to URL in form's action attribute
   url: '/some/path', 
 
@@ -63,5 +63,5 @@ var options = {
   // within the plugin
   debug: false
 
-};
+});
 ```
