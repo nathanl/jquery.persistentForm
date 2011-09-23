@@ -5,20 +5,16 @@ describe("persistentForm", function() {
     $form = $('#theForm');
     jasmine.Ajax.useMock();
 
-    // onSuccess = jasmine.createSpy('onSuccess');
-    // onFailure = jasmine.createSpy('onFailure');
-
     // request.response(TestResponses.save.success);
     request = mostRecentAjaxRequest();
   });
 
   it("has the plugin attached", function() {
 
-    $form.persistentForm({url: '/dummysave', saveButton: 'a.save.btn', saveIntervalRatio: 100, debug: true});
-    persistentFormInstance = $form.data('persistentForm');
+    $form.persistentForm();
 
     // I don't see a more precise way to test this at the moment
-    expect(typeof(persistentFormInstance)).toEqual('object');
+    expect(typeof($form.data('persistentForm'))).toEqual('object');
 
   });
 
@@ -55,7 +51,7 @@ describe("persistentForm", function() {
           var sel = $form.find('textarea:first').focus().val('BBQ').trigger('change');
         });
 
-        then("the list of inputs queued to be save should be empty", function(){
+        then("the select shoudl NOT be queued to be saved", function(){
           expect($form.data('persistentForm').$changedInputs.length).toEqual(0);
         });
 
