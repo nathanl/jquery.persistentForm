@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Jasmine Test Runner</title>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="lib/jquery-1.6.4.min.js"></script>
+
+    <!-- Namespace JS -->
+    <script type="text/javascript" src="lib/namespace.js"></script>
+
+    <!-- Jasmine -->
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-1.1.0/jasmine.css">
+    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine-html.js"></script>
+
+    <!-- Jasmine jQuery -->
+    <script type="text/javascript" src="lib/jasmine-jquery.js"></script>
+
+    <!-- Jasmine-Species -->
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-species-0.8.5b/jasmine-be-calm.css">
+    <script type="text/javascript" src="lib/jasmine-species-0.8.5b/jasmine-grammar.js"></script>
+    <script type="text/javascript" src="lib/jasmine-species-0.8.5b/jasmine-reporting.js"></script>
+
+    <script type="text/javascript">
+      // import feature, scenario ...
+      Namespace.use('jasmine.grammar.FeatureStory.*');
+      Namespace.use('jasmine.grammar.GWT.*');
+      Namespace.use('jasmine.grammar.Meta.*');
+    </script>
+
+    <!-- Source files -->
+    <script type="text/javascript" src="src/jquery.persistentform.js"></script>
+
+    <!-- Spec files -->
+    <script type="text/javascript" src="spec/timerSpec.js"></script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+      jasmine.getEnv().execute();
+    </script>
+  </body>
+
+</html>
