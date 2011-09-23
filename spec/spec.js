@@ -51,7 +51,7 @@ describe("persistentForm", function() {
           var sel = $form.find('textarea:first').focus().val('BBQ').trigger('change');
         });
 
-        then("the select shoudl NOT be queued to be saved", function(){
+        then("the select should NOT be queued to be saved", function(){
           expect($form.data('persistentForm').$changedInputs.length).toEqual(0);
         });
 
