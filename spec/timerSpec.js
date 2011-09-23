@@ -3,6 +3,13 @@ describe("persistentForm", function() {
   beforeEach(function() {
     loadFixtures('form.html');
     $form = $('#theForm');
+    jasmine.Ajax.useMock();
+
+    // onSuccess = jasmine.createSpy('onSuccess');
+    // onFailure = jasmine.createSpy('onFailure');
+
+    // request.response(TestResponses.save.success);
+    request = mostRecentAjaxRequest();
   });
 
   it("has the plugin attached", function() {
@@ -12,35 +19,46 @@ describe("persistentForm", function() {
 
     // I don't see a more precise way to test this at the moment
     expect(typeof(persistentFormInstance)).toEqual('object');
-    if (window && window.console) {console.log(persistentFormInstance);}
-    // console.log($form.getpersistentForm());
 
   });
 
-  // Use feature > story > scenario
-  // feature("Queueing changed inputs for autosave", function(){
+  feature("Queueing changed inputs for autosave", function(){
 
-  //   story("User changes one of the inputs in the form", function(){
+    story("User changes an input while the plugin is in idle mode", function(){
 
-  //     scenario("The input is not one that the plugin is watching for", function(){
+      beforeEach(function(){
+        $form.persistentForm({inputSelectors: 'input, select'});
+        // Set plugin to idle - the timer is running
+        $form.data('persistentForm').setState('idle');
+      });
 
-  //       given("the plugin has been asked to watch only inputs, not selects", function(){
-  //         $form.persistentForm({inputSelectors: 'input'});
-  //       });
+      scenario("If the input is one that the plugin is watching for", function(){
 
-  //       when("changing a select", function(){
-  //         // find a select and change it
-  //       });
+        when("changing an input", function(){
+          $input = $form.find('input:first');
+          $input.val('BBQ').trigger('change');
+        });
 
-  //       then("the list of inputs queued to be save should be empty", function(){
-  //         // expect($form.data('persistentForm').
-  //     
-  //       });
+        then("the list of inputs queued to be save should be empty", function(){
+          expect($form.data('persistentForm').$changedInputs.length).toEqual(1);
+        });
 
-  //     });
+      });
 
-  //   });
+      scenario("If the input is NOT one that the plugin is watching for", function(){
 
-  // });
+        when("changing a select", function(){
+          var sel = $form.find('textarea:first').focus().val('BBQ').trigger('change');
+        });
+
+        then("the list of inputs queued to be save should be empty", function(){
+          expect($form.data('persistentForm').$changedInputs.length).toEqual(0);
+        });
+
+      });
+
+    });
+
+  });
 
 });

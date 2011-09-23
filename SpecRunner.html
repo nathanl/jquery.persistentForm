@@ -22,11 +22,14 @@
     <script type="text/javascript" src="lib/jasmine-species-0.8.5b/jasmine-grammar.js"></script>
     <script type="text/javascript" src="lib/jasmine-species-0.8.5b/jasmine-reporting.js"></script>
 
+    <!-- Jasmine-Ajax -->
+    <script type="text/javascript" src="lib/mock-ajax.js"></script>
+    <script type="text/javascript" src="spec/javascripts/helpers/test_responses.js"></script>
+
     <script type="text/javascript">
       // import feature, scenario ...
       Namespace.use('jasmine.grammar.FeatureStory.*');
       Namespace.use('jasmine.grammar.GWT.*');
-      Namespace.use('jasmine.grammar.Meta.*');
     </script>
 
     <!-- Source files -->
@@ -34,11 +37,21 @@
 
     <!-- Spec files -->
     <script type="text/javascript" src="spec/timerSpec.js"></script>
+
   </head>
 
   <body>
+
     <script type="text/javascript">
-      jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+      // Get prettier reporting
+      var jasmineEnv = jasmine.getEnv();
+      var styledReporter = new jasmine.reporting.StyledHtmlReporter();
+
+      jasmineEnv.addReporter(styledReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return styledReporter.specFilter(spec);
+      };
       jasmine.getEnv().execute();
     </script>
   </body>
