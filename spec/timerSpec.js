@@ -24,28 +24,32 @@ describe("persistentForm", function() {
 
   feature("Queueing changed inputs for autosave", function(){
 
-    story("User changes an input while the plugin is in idle mode", function(){
+    story("User changes one or more inputs while the plugin is in idle mode", function(){
 
       beforeEach(function(){
         $form.persistentForm({inputSelectors: 'input, select'});
         // Set plugin to idle - the timer is running
         $form.data('persistentForm').setState('idle');
+        $firstInput = $form.find('input:first');
+        $firstSelect = $form.find('select:first');
       });
 
-      scenario("If the input is one that the plugin is watching for", function(){
+      scenario("If the changed input(s) are being watched by persistentForm", function(){
 
-        when("changing an input", function(){
-          $input = $form.find('input:first');
-          $input.val('BBQ').trigger('change');
+        when("changing some inputs", function(){
+          $firstInput.val('stegasaurus').trigger('change');
+          $firstSelect.val('bbq').trigger('change');
         });
 
-        then("the list of inputs queued to be save should be empty", function(){
-          expect($form.data('persistentForm').$changedInputs.length).toEqual(1);
+        then("the inputs should be queued to be saved", function(){
+          expect($form.data('persistentForm').$changedInputs.length).toEqual(2);
+          expect($form.data('persistentForm').$changedInputs[0]).toBe($firstInput[0]);
+          expect($form.data('persistentForm').$changedInputs[1]).toBe($firstSelect[0]);
         });
 
       });
 
-      scenario("If the input is NOT one that the plugin is watching for", function(){
+      scenario("If the changed input(s) are NOT being watched by persistentForm", function(){
 
         when("changing a select", function(){
           var sel = $form.find('textarea:first').focus().val('BBQ').trigger('change');
