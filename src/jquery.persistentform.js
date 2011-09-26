@@ -184,11 +184,9 @@
 
     $.persistentForm.defaultOptions = {
         saveInterval: 3000,
-        // If ratio provided, use experimental behavior: 
-        // saveIntervalRatio: 100,
         inputSelectors: 'input,select,textarea',
         saveButton: '#saveButton',
-        saveTimeDisplay: ".auto-save-display",
+        saveTimeDisplay: "#saveDisplay",
         debug: false
     };
     
