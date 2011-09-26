@@ -1,3 +1,9 @@
+// ---------------------------------------------
+// persistentForm v0.1
+// A jQuery plugin by Nathan Long
+// https://github.com/sleeplessgeek/jquery.persistentForm
+// ---------------------------------------------
+
 (function($){
     $.persistentForm = function(el, options){
         var base = this;
