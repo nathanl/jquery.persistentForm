@@ -65,3 +65,7 @@ $('#myform').persistentForm({
 
 });
 ```
+## TODO
+
+- Establish a maximum autosave interval, so that repeated server errors don't jack it up past, say, 5 minutes.
+- To prevent users from losing work while typing a large amount of text in a text area, count keyup events and fire a change event on that textarea after some number of keystrokes (15?).
