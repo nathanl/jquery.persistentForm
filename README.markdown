@@ -83,7 +83,7 @@ If you're using OSX or Linux, you can set up the DNS entry by adding the followi
 127.0.0.1 persistentform.local
 ```
 
-For the server, I use Nginx and have most of my configuration in the main `nginx.conf`; individual sites are configured using files under `conf/sites`. For this project, I have `persistenForm.local.conf` containing:
+For the server, I use Nginx and have most of my configuration in the main `nginx.conf`; individual sites are configured using files under `conf/sites`. For this project, I have `persistentForm.local.conf` containing:
 
 ```
 server {
@@ -97,6 +97,5 @@ You will need to restart your web server for any new configuration to take effec
 
 ## TODO
 
-- Establish a maximum autosave interval, so that repeated server errors don't jack it up past, say, 5 minutes.
+- Test AJAX - add Sinatra server to bypass all the headaches?
 - To prevent users from losing work while typing a large amount of text in a text area, count keyup events and fire a change event on that textarea after some number of keystrokes (15?).
-- Add "fields to always submit" option, such as Rails CSRF token
