@@ -49,6 +49,9 @@
           // Append the inputs to our collection
           base.$changedInputs = base.$changedInputs.add(inputs);
 
+          // Append any inputs that we must always include
+          base.$changedInputs = base.$changedInputs.add(base.$alwaysInclude);
+
           // Update button to show that there are unsaved changes
           base.setButtonState('active');
           
@@ -68,8 +71,6 @@
 
 
         base.save = function(auto) {
-          // TODO: See TODO.markdown
-          var saveInterval, startTime, currentDateTime, currentTime, requestDuration;
 
           // If there's anything that needs saving
           if (base.$changedInputs.length > 0) {
@@ -83,22 +84,20 @@
             // Extract the inputs' data
             var formData = $inputsBeingSaved.serialize();
 
-            startTime = new Date();
+            base.timer.start();
 
             // Attempt to save via ajax
             $.post(base.url,formData).done(function(){
               if (base.options.debug) {console.log('saved:',formData);}
 
-              // Timestamps
-              currentTime  = new Date();
-              requestDuration = currentTime.getTime() - startTime.getTime();
+              base.timer.stop();
 
-              base.options.saveInterval = base.getSaveInterval(requestDuration);
+              base.options.saveInterval = base.getSaveInterval(base.timer.elapsed());
               base.setState('idle');
               setTimeout(base.autoSave, base.options.saveInterval);
 
               base.setButtonState('inactive');
-              base.updateSaveTimeDisplay(currentTime, auto);
+              base.updateSaveTimeDisplay(new Date(), auto);
 
             }).fail(function(){
               // if request fails
@@ -112,6 +111,14 @@
             });
           }
 
+        };
+
+        base.timer = {
+          startTime: null,
+          endTime:   null,
+          start: function() { this.startTime = new Date(); },
+          stop: function()  { this.endTime   = new Date(); },
+          elapsed: function(){ return this.endTime.getTime() - this.startTime.getTime(); }
         };
 
         base.updateSaveTimeDisplay = function(date, auto) {
@@ -141,12 +148,16 @@
 
         base.getSaveInterval = function(requestTime) {
           var interval;
+
           var calculated = requestTime * base.options.saveIntervalRatio;
           if (isNaN(calculated)) {
             interval = base.options.saveInterval;
           } else {
             interval =  calculated;
           }
+
+          interval = interval < base.options.maxInterval ? interval : base.options.maxInterval;
+
           if (base.options.debug) {console.log('request time',requestTime,'ms - save again in',interval,'ms');}
           return interval;
         };
@@ -160,6 +171,10 @@
             
             base.options = $.extend({},$.persistentForm.defaultOptions, options);
 
+            if (base.options.debug) {
+              console.log('Current persistentForm options are', base.options);
+            }
+
             // Unless a URL is provided, use the one in the form's action
             base.url = base.options.url === undefined ? base.$el.attr('action') : base.options.url;
             
@@ -167,6 +182,10 @@
             // in the process of autosaving, inputs will be queued in it
             // and cleared back out
             base.$changedInputs = $('');
+
+            // There may be inputs we always want saved (such as a Rails CSRF token).
+            // Collect those up once.
+            base.$alwaysInclude = $(base.options.alwaysInclude);
 
             // Set up save button
             $(base.options.saveButton).click(function(e){
@@ -190,6 +209,7 @@
 
     $.persistentForm.defaultOptions = {
         saveInterval: 3000,
+        maxInterval: 300000,
         inputSelectors: 'input,select,textarea',
         saveButton: '#saveButton',
         saveTimeDisplay: "#saveDisplay",
