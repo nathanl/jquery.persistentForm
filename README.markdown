@@ -65,7 +65,38 @@ $('#myform').persistentForm({
 
 });
 ```
+
+## Development
+
+### Running the tests
+
+To run the tests for persistentForm, the test page just needs to be served up by an actual web server (not just opened with `file://`).
+
+To make this work on your local machine, you need:
+
+- A local DNS entry saying that `taxscribe.local` should be served from localhost.
+- A web server running locally with this folder as the document root.
+
+If you're using OSX or Linux, you can set up the DNS entry by adding the following line to `/etc/hosts`:
+
+```
+127.0.0.1 persistentform.local
+```
+
+For the server, I use Nginx and have most of my configuration in the main `nginx.conf`; individual sites are configured using files under `conf/sites`. For this project, I have `persistenForm.local.conf` containing:
+
+```
+server {
+  listen 80;
+  server_name persistentForm.local;
+  root /Users/nathanlong/projects/persistentForm;
+}
+```
+
+You will need to restart your web server for any new configuration to take effect.
+
 ## TODO
 
 - Establish a maximum autosave interval, so that repeated server errors don't jack it up past, say, 5 minutes.
 - To prevent users from losing work while typing a large amount of text in a text area, count keyup events and fire a change event on that textarea after some number of keystrokes (15?).
+- Add "fields to always submit" option, such as Rails CSRF token
