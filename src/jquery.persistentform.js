@@ -99,9 +99,8 @@
               base.setButtonState('inactive');
               base.updateSaveTimeDisplay(new Date(), auto);
 
-            }).fail(function(){
-              // if request fails
-              base.options.saveInterval = base.options.saveInterval * 2;
+            }).fail(function(){ // if the request fails
+              base.options.saveInterval = Math.min(base.options.saveInterval * 2, base.options.maxInterval);
               if (base.options.debug) {console.log('failed to save; save interval now',base.options.saveInterval);}
               setTimeout(base.autoSave, base.options.saveInterval);
               base.setState('unsavedChanges');
@@ -209,7 +208,7 @@
 
     $.persistentForm.defaultOptions = {
         saveInterval: 3000,
-        maxInterval: 300000,
+        maxInterval: 30000,
         inputSelectors: 'input,select,textarea',
         saveButton: '#saveButton',
         saveTimeDisplay: "#saveDisplay",

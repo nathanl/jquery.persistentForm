@@ -70,32 +70,17 @@ $('#myform').persistentForm({
 
 ### Running the tests
 
-To run the tests for persistentForm, the test page just needs to be served up by an actual web server (not just opened with `file://`).
+Testing AJAX is haaaaarrrd! To make it easy on myself, I test them against running server software, rather than trying to simulate requests going out, taking some time, and coming back with response codes.
 
-To make this work on your local machine, you need:
+To run the tests, you need that server, too. Fortunately, it's not so hard. Do this:
 
-- A local DNS entry saying that `taxscribe.local` should be served from localhost.
-- A web server running locally with this folder as the document root.
-
-If you're using OSX or Linux, you can set up the DNS entry by adding the following line to `/etc/hosts`:
-
-```
-127.0.0.1 persistentform.local
-```
-
-For the server, I use Nginx and have most of my configuration in the main `nginx.conf`; individual sites are configured using files under `conf/sites`. For this project, I have `persistentForm.local.conf` containing:
-
-```
-server {
-  listen 80;
-  server_name persistentForm.local;
-  root /Users/nathanlong/projects/persistentForm;
-}
-```
-
-You will need to restart your web server for any new configuration to take effect.
+- Install Ruby if you don't have it yet
+- `gem install bundler`
+- `bundle install` - this will install the Sinatra gem for running local servers
+- `ruby server.rb` - starts the server running
+- Visit localhost:4567 and click the link for the tests
 
 ## TODO
 
-- Test AJAX - add Sinatra server to bypass all the headaches?
 - To prevent users from losing work while typing a large amount of text in a text area, count keyup events and fire a change event on that textarea after some number of keystrokes (15?).
+- Add test for "fields to always submit" option, such as Rails CSRF token
