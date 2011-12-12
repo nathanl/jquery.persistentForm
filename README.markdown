@@ -114,9 +114,9 @@ A few things are implied by this mental model.
 
 - There are four possible states: both switches off, both on, only "changes" on, and only "ready" on. Either switch could be turned on before the other.
 - The four states break down as follows:
-  - If the "changes" switch is turned on before "ready", the form has unsaved changes that it's waiting for an opportunity to save. As soon as the timer goes off, the "ready" switch will go up, the save will happen, and both switches will turn off: there are no changes ready, and the timer is running.
+  - If the "changes" switch is turned on before "ready", the form has unsaved changes that it's waiting for an opportunity to save. As soon as the timer goes off, the "ready" switch will go up, the save will happen, and both switches will turn off.
   - If the "ready" switch is turned on first (because the timer has expired), the form is eager to save any changes that may come in. As soon as a change comes in, the "changes" switch will go up, the save will happen, and both switches will turn off.
-  - If both switches are off, the plugin isn't ready to send changes to the server, but there is nothing to be sent anyway.
+  - If both switches are off, there are no changes ready to be sent, and the plugin isn't ready to send them anyway; it is counting down to the moment when it thinks the server will be ready to get another batch of changes.
   - If both switches are on, an autosave is in progress. This state should last only a moment.
 
 Finally, remember that the user can save their changes anytime they want, so although the "ready" switch will normally be turned on by the timer, the user can manually turn it on anytime, saving any unsaved changes. Just as with an autosave, this user-initiated save turns both switches off and restarts the timer based on how long it took the server to process the save.
