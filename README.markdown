@@ -90,11 +90,11 @@ To track when inputs change, the form sets up event listeners on their [change e
 - Gather their data and remove their markers.
 - POST the data.
 
-While this might work, it presents some problems. First, it involves a small amount of unnecessary work: searching for marked inputs.
+While this might work, it presents some problems. First, it involves a small amount of unnecessary work: searching the form for inputs which we already "found" (when we marked them). Not a big deal, but it feels sloppy.
 
 Second, what if the save fails? If we've removed the markers from inputs that should have been saved, how will we know which ones to try saving again?
 
-A somewhat simpler and probably faster approach is used instead. When an input changes, the plugin:
+Instead of the above, we use a somewhat simpler (and probably faster) collection-based approach. When an input changes, the plugin:
 
 - Immediately adds the input to a collection queued for saving, so there's no need to look for it again later. 
   - For this, jQuery's [add method](http://api.jquery.com/add) is used. jQuery's collections automatically prevent duplicates, so `$collection.add('#input1').add('#input1')` results in only one copy of `#input1` in the collection (or zero, if `#input1` doesn't exist).
@@ -103,7 +103,25 @@ A somewhat simpler and probably faster approach is used instead. When an input c
 
 ## Design Part Deux: Visualizing the Autosave Strategy
 
-(Insert light switch analogy)
+To understand when persistentForm will save the form's data, it's helpful to picture a pair of light switches.
+
+- The first light switch is labelled **changes**. Whenever an input on the form changes and is queued for saving, this switch is turned on (if it isn't already on).
+- The second light switch is labelled **ready**. This switch turns on based on a timer. The timer, in turn, is persistenForm's way of estimating when the server (to which the changes will be sent) will be ready to receive the next autosave.
+
+Whenever **both switches** are turned on, persistentForm will save any changes it has queued up. Once the save happens, both switches will turn back off.
+
+A few things are implied by this mental model.
+
+- There are four possible states: both switches off, both on, only "changes" on, and only "ready" on. Either switch could be turned on before the other.
+- The four states break down as follows:
+  - If the "changes" switch is turned on before "ready", the form has unsaved changes that it's waiting for an opportunity to save. As soon as the timer goes off, the "ready" switch will go up, the save will happen, and both switches will turn off: there are no changes ready, and the timer is running.
+  - If the "ready" switch is turned on first (because the timer has expired), the form is eager to save any changes that may come in. As soon as a change comes in, the "changes" switch will go up, the save will happen, and both switches will turn off.
+  - If both switches are off, the plugin isn't ready to send changes to the server, but there is nothing to be sent anyway.
+  - If both switches are on, an autosave is in progress. This state should last only a moment.
+
+Finally, remember that the user can save their changes anytime they want, so although the "ready" switch will normally be turned on by the timer, the user can manually turn it on anytime, saving any unsaved changes. Just as with an autosave, this user-initiated save turns both switches off and restarts the timer based on how long it took the server to process the save.
+
+You can get an intuitive feel for how this process works by setting the `debug` option to `true` and watching the messages that persistentForm logs about its activities.
 
 ## Development
 
@@ -118,7 +136,7 @@ To run the tests, you need that server, too. Fortunately, it's not so hard. Do t
 - `gem install bundler`
 - `bundle install` - this will install the Sinatra gem for running local servers
 - `ruby server.rb` - starts the server running
-- Visit localhost:4567 and click the link for the tests
+- Visit `http://localhost:4567` and click the link for the tests
 
 ## TODO
 
