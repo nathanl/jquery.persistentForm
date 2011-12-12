@@ -48,6 +48,10 @@ $('#myform').persistentForm({
   // clever as you like: ':input:not(button):not(.ignore)' or whatever
   inputSelectors: ':input:not(button)',
 
+  // jQuery selector for inputs that should be submitted with every save.
+  // For example, for forms in Ruby on Rails applications, the authenticity token.
+  alwaysInclude: 'input[name="authenticity_token"]',
+
   // Button which, when clicked, will trigger an incremental AJAX save.
   saveButton: '#saveButton',
 

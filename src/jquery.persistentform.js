@@ -46,11 +46,9 @@
         };
 
         base.queueForAutoSave = function(inputs){
-          // Append the inputs to our collection
-          base.$changedInputs = base.$changedInputs.add(inputs);
 
-          // Append any inputs that we must always include
-          base.$changedInputs = base.$changedInputs.add(base.$alwaysInclude);
+          // Append the inputs to our collection, along with any that should always be saved
+          base.$changedInputs = base.$changedInputs.add(inputs).add(base.$alwaysInclude);
 
           // Update button to show that there are unsaved changes
           base.setButtonState('active');
@@ -180,7 +178,7 @@
             // Initialize an empty collection of DOM elements; 
             // in the process of autosaving, inputs will be queued in it
             // and cleared back out
-            base.$changedInputs = $('');
+            base.$changedInputs = $();
 
             // There may be inputs we always want saved (such as a Rails CSRF token).
             // Collect those up once.
@@ -212,6 +210,7 @@
         saveIntervalRatio: 50,
         maxInterval: 30000, 
         inputSelectors: ':input:not(button)',
+        alwaysInclude: undefined,
         saveButton: '#saveButton',
         saveTimeDisplay: "#saveTimeDisplay",
         debug: false
