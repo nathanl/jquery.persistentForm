@@ -1,5 +1,5 @@
 // ---------------------------------------------
-// persistentForm v0.1
+// persistentForm v0.2
 // A jQuery plugin by Nathan Long
 // https://github.com/sleeplessgeek/jquery.persistentForm
 // ---------------------------------------------
@@ -207,11 +207,13 @@
     };
 
     $.persistentForm.defaultOptions = {
+        url: undefined, // defaults to form's action
         saveInterval: 3000,
-        maxInterval: 30000,
-        inputSelectors: 'input,select,textarea',
+        saveIntervalRatio: 50,
+        maxInterval: 30000, 
+        inputSelectors: ':input:not(button)',
         saveButton: '#saveButton',
-        saveTimeDisplay: "#saveDisplay",
+        saveTimeDisplay: "#saveTimeDisplay",
         debug: false
     };
     

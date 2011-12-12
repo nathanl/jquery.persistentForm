@@ -33,31 +33,33 @@ $('#myform').persistentForm({
   // URL for ajax posts. Defaults to URL in form's action attribute
   url: '/some/path', 
 
-  // Initial wait time before checking for changes
+  // Initial wait time before checking for changes (in milliseconds)
   saveInterval: 3000,
 
+  // Each time the plugin autosaves, it will measure how long
+  // it takes for the server to respond. It will then determine 
+  // how long to wait before autosaving again by multiplying
+  // the response time by this ratio.
+  // For example, if the server takes 250ms to respond and you set a ratio of
+  // 100, we'll check for changes again in 25000ms (25 seconds).
+  saveIntervalRatio: 50,
+
+  // The upper limit on how long to wait between autosaves (in milliseconds).
+  // No matter how slow the server is to respond, even if it responds with
+  // errors, don't wait longer than this to try autosaving again.
+  maxInterval: 300000,
 
   // Which inputs within the form do you want to autosave?
   // Any valid jQuery selector string is fine, so be as
-  // clever as you like: 'input:not(".secret")' or whatever
-  inputSelectors: 'input,select,textarea',
+  // clever as you like: ':input:not(button):not(.ignore)' or whatever
+  inputSelectors: ':input:not(button)',
 
-  // Button which, when clicked, will trigger an incremental
-  // AJAX save
+  // Button which, when clicked, will trigger an incremental AJAX save.
   saveButton: '#saveButton',
 
   // Element to update with messages like 
   // "Last auto-saved 11:40:54 Friday, September 23, 2011"
   saveTimeDisplay: "#saveMessages",
-
-  // If provided, triggers experimental behavior: 
-  // plugin dynamically adjusts how often it tries
-  // to autosave based on how long the server takes
-  // to respond. It calculates the server response time
-  // and multiplies by this ratio. For example, if the server
-  // takes 250ms to respond and you set a ratio of 100,
-  // we'll check for changes again in 25000ms (25 seconds).
-  saveIntervalRatio: 100,
 
   // Whether to console.log() debugging messages from
   // within the plugin
@@ -72,9 +74,10 @@ $('#myform').persistentForm({
 
 Testing AJAX is haaaaarrrd! To make it easy on myself, I test them against running server software, rather than trying to simulate requests going out, taking some time, and coming back with response codes.
 
-To run the tests, you need that server, too. Fortunately, it's not so hard. Do this:
+To run the tests, you need that server, too. Fortunately, it's not so hard. Do this (assuming a Unix-family OS):
 
 - Install Ruby if you don't have it yet
+- Change to the plugin's directory on the command line
 - `gem install bundler`
 - `bundle install` - this will install the Sinatra gem for running local servers
 - `ruby server.rb` - starts the server running
@@ -84,3 +87,6 @@ To run the tests, you need that server, too. Fortunately, it's not so hard. Do t
 
 - To prevent users from losing work while typing a large amount of text in a text area, count keyup events and fire a change event on that textarea after some number of keystrokes (15?).
 - Add test for "fields to always submit" option, such as Rails CSRF token
+- Check into possible race conditions and prevent them.
+  - A new POST should not begin until the previous one has finished or been deliberately abandoned and cleaned up after.
+  - Taking care of that should prevent two POSTS from fighting over the timer, but just make sure
