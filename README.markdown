@@ -12,12 +12,6 @@ PersistentForm is a plugin to make your forms auto-save using AJAX prior to fina
 - You want your user to be able to save on demand
 - You like speed
 
-## Speediness
-
-A few things that make persistentForm speedy:
-
-(coming soon)
-
 ## Basic Usage
 
 ```javascript
@@ -67,6 +61,45 @@ $('#myform').persistentForm({
 
 });
 ```
+## Design
+
+A few notable design decisions in persistentForm are as follows.
+
+### Autosave immediately when possible
+
+If the plugin is sitting idle and believes the server is ready to accept new data, any changes to the form will be saved immediately. If the server continues to respond quickly, the user may get an autosave after every change to the form.
+
+### Autosave as often as the server can handle
+
+The plugin decides how soon to attempt a new save based on how long the server took to respond to its previous autosave. This decision is process is adjustable using a ratio, but the basic idea is that if the server responds quickly, it is keeping up with its workload and can handle the additional work of frequent autosaves. If it's responding slowly, we reduce the frequency of autosaves to relieve some of its workload.
+
+### Let users save at any moment
+
+Anytime there are unsaved changes, the user can click to save them, regardless of how long the autosave process would otherwise wait.
+
+### Tell changed inputs to get in line
+
+To track when inputs change, the form sets up event listeners on their [change events](http://api.jquery.com/change). One way to handle a change would be as follows:
+
+- Mark the input somehow as changed - add a class or a data attribute, for example.
+- When preparing to autosave, search the form for marked elements.
+- Gather their data and remove their markers.
+- POST the data.
+
+While this might work, it presents some problems. First, it involves a small amount of unnecessary work: searching for marked inputs.
+
+Second, what if the save fails? If we've removed the markers from inputs that should have been saved, how will we know which ones to try saving again?
+
+A somewhat simpler and probably faster approach is used instead. When an input changes, the plugin:
+
+- Immediately adds the input to a collection queued for saving, so there's no need to look for it again later. 
+  - For this, jQuery's [add method](http://api.jquery.com/add) is used. jQuery's collections automatically prevent duplicates, so `$collection.add('#input1').add('#input1')` results in only one copy of `#input1` in the collection (or zero, if `#input1` doesn't exist).
+- When it's time to save, we already have a collection of inputs that need saving, so we can simply call `.serialize()` on that collection and post the data. The collection is then "set aside" and a new, blank collection is set up as the new queue for future changes.
+- If the post fails for some reason, the inputs that should have been saved, which we set aside in the previous step, are added back to the queue for the next attempt.
+
+## Design Part Deux: Visualizing the Autosave Strategy
+
+(Insert light switch analogy)
 
 ## Development
 
