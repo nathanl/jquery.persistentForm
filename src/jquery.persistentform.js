@@ -185,14 +185,14 @@
             base.$alwaysInclude = $(base.options.alwaysInclude);
 
             // Set up save button
-            $(base.options.saveButton).click(function(e){
+            $(base.options.saveButton).bind('click.persistentForm', function(e){
               base.setButtonState('inactive');
               e.preventDefault();
               base.save();
             });
 
             // If any inputs on the form change, queue them to be autosaved
-            base.$el.delegate(base.options.inputSelectors,'change',function(){
+            base.$el.delegate(base.options.inputSelectors,'change.persistentForm',function(){
               base.queueForAutoSave($(this));
             });
 
