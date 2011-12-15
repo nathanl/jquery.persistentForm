@@ -76,36 +76,6 @@ describe("persistentForm", function() {
 
     });
 
-    // This is here to document that this test is a bad idea, so
-    // that nobody thinks they should add such a thing.
-    //
-    // The test kinda sorta works, but:
-    // 
-    // 1) Hacking together a "sleep" like this produces results
-    // that are not completely predictable
-    // 2) Since we've already tested the elapsed() method, this
-    // really just tests start() and stop(), which are so simple
-    // that it's not necessary.
-    //
-    // scenario("when a known amount of time passes", function(){
-    //   when("we start and stop the time at known points", function(){
-    //     plugin.timer.start();
-    //     startTime = new Date().getTime();
-    //     endTime = startTime + 10;
-    //
-    //     // A hacked-together sleep function
-    //     while(new Date().getTime() < endTime) {
-    //       // Do something useless
-    //       1 + 1;
-    //     }
-    //     plugin.timer.stop();
-    //   });
-
-    //   then("elapsed time should be correct", function(){
-    //     expect(plugin.timer.elapsed()).toEqual(10);
-    //   });
-    // });
-
   });
 
   feature("Varying the autosave interval according to the server response", function(){
@@ -185,7 +155,7 @@ describe("persistentForm", function() {
             saveIntervalRatio: 5,
             maxInterval: 30000,
             url: '/failwhale',
-            debug: true
+            debug: false
           });
 
           // Reference to the initialized plugin
@@ -216,7 +186,7 @@ describe("persistentForm", function() {
             saveIntervalRatio: 5,
             maxInterval: 5000,
             url: '/failwhale',
-            debug: true
+            debug: false
           });
 
           // Reference to the initialized plugin
@@ -249,7 +219,7 @@ describe("persistentForm", function() {
             saveInterval: 3000,
             url: '/failwhale',
             maxInterval: 20000,
-            debug: true
+            debug: false
           });
 
           // Reference to the initialized plugin
@@ -275,5 +245,35 @@ describe("persistentForm", function() {
     });
 
   });
+
+  // feature("Capturing textarea contents incrementally", function(){
+
+  //   when("the user types enough keystrokes in a text area", function(){
+
+  //     $form.persistentForm({
+  //       inputSelectors: 'input, select', 
+  //       url: '/dummysave',
+  //       saveInterval: 3000,
+  //       saveIntervalRatio: 2
+  //     });
+
+  //     plugin = $form.data('persistentForm');
+  //     spyOn(plugin, 'save');
+
+  //     $toastPoem = $form.find('#toast-poem');
+  //     $toastPoem.val('Brown and crispy / buttery sidekick / thanks for everything');
+
+  //     // Trigger a bunch of keypresses
+  //     for (i=0; i < 100; i++) {
+  //       $toastPoem.trigger('keyup');
+  //     }
+
+  //   });
+
+  //   then("it should trigger a save", function(){
+  //     expect(plugin.save).toHaveBeenCalled();
+  //   });
+
+  // });
 
 });

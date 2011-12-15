@@ -145,3 +145,5 @@ To run the tests, you need that server, too. Fortunately, it's not so hard. Do t
 - Check into possible race conditions and prevent them.
   - A new POST should not begin until the previous one has finished or been deliberately abandoned and cleaned up after.
   - Taking care of that should prevent two POSTS from fighting over the timer, but just make sure
+- Add a way to "turn off" the autosaving - maybe set a "disabled" property and check it before setting any of the timers.
+  - Also unbind all event listeners and remove pointer to plugin?
